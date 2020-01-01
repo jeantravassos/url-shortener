@@ -37,7 +37,7 @@ Explain how to run the automated tests for this system
 | Shortened a URL | http://localhost:8080/url | POST | {"url":"http://www.neueda.com"} |
 | Redirect | http://localhost:8080/url/{shortCode} | GET | - |
 | Get statistics | http://localhost:8080/statistics/{shortCode} | GET | - |
-
+| Documentation | http://localhost:8080/swagger-ui.html | - | - | 
 
 ## Built With
 
