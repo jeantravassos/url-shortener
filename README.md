@@ -50,6 +50,16 @@ Explain how to run the automated tests for this system
 * [Maven](https://maven.apache.org/)
 * [Docker](https://www.docker.com/)
 
+## Abstract Design
+1 - Application Service layer (serves the requests)
+* Shortening service
+* Redirection service
+
+2 - Data Storage layer (keeps track of the hash -> URL Mappings)
+* Acts like a big hash table: stores new mappings and retrieves a value given a key
+
+hash_url = converted_to_base64(md5(original_url))[:6]
+
 ## Author
 
 * **Jean Travassos** - *Senior Software Engineer* - [LinkedIn]([https://www.linkedin.com/in/jeantravassos/](https://www.linkedin.com/in/jeantravassos/))
