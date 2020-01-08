@@ -1,5 +1,6 @@
 package com.jeantravassos.urlshortener.service;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -70,4 +71,9 @@ public class URLService {
 		return optional.orElseThrow(() -> new URLNotFoundException("URL not found for the shortened code: " + code));
 	}
 
+	public List<URL> getAllURLs()
+	{
+		log.info("Service searching for all saved URLs");
+		return urlRepository.findAll();
+	}
 }

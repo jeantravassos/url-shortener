@@ -1,6 +1,7 @@
 package com.jeantravassos.urlshortener.web.controller;
 
 import java.net.URI;
+import java.util.List;
 import java.util.Map;
 
 import javax.validation.Valid;
@@ -57,7 +58,9 @@ public class URLController {
 		log.info("URI created: ", uri);
 		return ResponseEntity.created(uri).build();
 	}
-	
+
+	@ApiOperation(value = "Redirecting to a original URL",
+		    notes = "This method receives a key of the original URL as parameter, and returns a redirection for the original one")
 	@GetMapping(path = "/{code}")
 	public ResponseEntity<URL> redirect(@PathVariable String code,
 			@RequestHeader Map<String, String> headersMap) {
@@ -81,6 +84,16 @@ public class URLController {
 		headers.setLocation(URI.create(url.getOriginal()));
 
 		return new ResponseEntity<>(headers, HttpStatus.MOVED_PERMANENTLY);
+	}
+	
+	@ApiOperation(value = "Get all URLs saved",
+		    notes = "Finds all the URLs registered in the database")
+	@GetMapping(path = "/")
+	public List<URL> findAll() {
+
+		log.info("Find all URLs");
+
+		return urlService.getAllURLs();
 	}
 	
 }

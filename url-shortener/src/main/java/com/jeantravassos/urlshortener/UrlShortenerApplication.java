@@ -17,7 +17,8 @@ public class UrlShortenerApplication {
 	public static void main(String[] args) {
 		SpringApplication.run(UrlShortenerApplication.class, args);
 	}
-
+	
+	//Swagger2.0
 	@Bean
     public Docket api() { 
         return new Docket(DocumentationType.SWAGGER_2)  
