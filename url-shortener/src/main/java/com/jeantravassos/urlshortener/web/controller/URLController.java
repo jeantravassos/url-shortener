@@ -19,9 +19,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
-import com.jeantravassos.urlshortener.DTO.URLDTO;
 import com.jeantravassos.urlshortener.domain.URL;
-import com.jeantravassos.urlshortener.exception.URLNotFoundException;
+import com.jeantravassos.urlshortener.dto.URLDTO;
 import com.jeantravassos.urlshortener.service.URLService;
 import com.jeantravassos.urlshortener.service.URLStatisticService;
 
@@ -46,7 +45,6 @@ public class URLController {
 	@PostMapping
 	public ResponseEntity<URL> create(@Valid @RequestBody URLDTO urlDTO) {
 
-		log.info("Trying to find or create a new URL", urlDTO.getUrl());
 		URL url = urlService.createShortURL(urlDTO.getUrl());
 		
 		URI uri = ServletUriComponentsBuilder
@@ -55,7 +53,6 @@ public class URLController {
 				.buildAndExpand(url.getShortened())
 				.toUri();
 
-		log.info("URI created: ", uri);
 		return ResponseEntity.created(uri).build();
 	}
 
@@ -65,17 +62,7 @@ public class URLController {
 	public ResponseEntity<URL> redirect(@PathVariable String code,
 			@RequestHeader Map<String, String> headersMap) {
 
-		code = code.replaceAll(CHARS_TO_REPLACE, "_");
-
-		log.info("Searching URL with shortened code: ", code);
-
 		URL url = urlService.getURLByShortened(code);
-
-		log.info("URL found: " + (url != null ? url.getOriginal() : null));
-		
-		if (url == null) {
-			throw new URLNotFoundException("URL not found for the short code: " + code);
-		}
 
 		//Create statistic related to the current URL access redirection
 		statisticService.createStatistic(headersMap, url);
@@ -90,7 +77,6 @@ public class URLController {
 		    notes = "Finds all the URLs registered in the database")
 	@GetMapping(path = "/")
 	public List<URL> findAll() {
-
 		log.info("Find all URLs");
 
 		return urlService.getAllURLs();

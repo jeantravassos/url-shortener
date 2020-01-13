@@ -1,7 +1,9 @@
 package com.jeantravassos.urlshortener;
 
-import org.junit.Assert;
-import org.junit.Test;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertNotEquals;
+
+import org.junit.jupiter.api.Test;
 
 import com.jeantravassos.urlshortener.helper.URLHelper;
 
@@ -16,7 +18,7 @@ public class URLHelperTest {
 		String hash1 = URLHelper.shorteningURL(url, startIndex, endIndex);
 		String hash2 = URLHelper.shorteningURL(url, startIndex, endIndex);
 		
-		Assert.assertEquals(hash1, hash2);
+		assertEquals(hash1, hash2);
 	}
 	
 	@Test
@@ -29,7 +31,7 @@ public class URLHelperTest {
 		String hash1 = URLHelper.shorteningURL(urlJ, startIndex, endIndex);
 		String hash2 = URLHelper.shorteningURL(urlI, startIndex, endIndex);
 		
-		Assert.assertNotEquals(hash1, hash2);
+		assertNotEquals(hash1, hash2);
 	}
 	
 	@Test
@@ -40,7 +42,7 @@ public class URLHelperTest {
 		
 		String hash = URLHelper.shorteningURL(url, startIndex, endIndex);
 		
-		Assert.assertEquals(endIndex - startIndex + 1, hash.length());
+		assertEquals(endIndex - startIndex + 1, hash.length());
 	}
 
 	

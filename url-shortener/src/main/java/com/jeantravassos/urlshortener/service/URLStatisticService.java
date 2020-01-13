@@ -23,8 +23,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class URLStatisticService {
 
-	public static final String CHARS_TO_REPLACE = "[\n|\r|\t]";
-
 	@Autowired
 	private URLStatisticRepository statisticRepo;
 	
@@ -32,8 +30,6 @@ public class URLStatisticService {
 	public URLStatistic createStatistic(Map<String, String> headers, URL url) {
 
 		String userAgentString = headers.get(HttpHeaders.USER_AGENT.toLowerCase());
-
-		userAgentString = userAgentString.replaceAll(CHARS_TO_REPLACE, "_");
 
 		log.info("Getting data from Header info: ", userAgentString);
 

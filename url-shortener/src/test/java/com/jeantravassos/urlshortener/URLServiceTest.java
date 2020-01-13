@@ -1,18 +1,31 @@
 package com.jeantravassos.urlshortener;
 
-import org.junit.Assert;
-import org.junit.Before;
-import org.junit.Test;
+import static org.assertj.core.api.Assertions.assertThat;
+import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.mockito.BDDMockito.given;
+import static org.mockito.BDDMockito.then;
+import static org.mockito.Mockito.atLeastOnce;
+import static org.mockito.Mockito.verify;
+import static org.mockito.Mockito.when;
+
+import java.util.ArrayList;
+import java.util.List;
+
+import org.junit.jupiter.api.DisplayName;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.Mockito;
-import org.mockito.MockitoAnnotations;
+import org.mockito.junit.jupiter.MockitoExtension;
 
 import com.jeantravassos.urlshortener.domain.URL;
 import com.jeantravassos.urlshortener.exception.URLNotFoundException;
 import com.jeantravassos.urlshortener.repository.URLRepository;
 import com.jeantravassos.urlshortener.service.URLService;
 
+@ExtendWith(MockitoExtension.class)
 public class URLServiceTest {
 
 	@InjectMocks
@@ -20,11 +33,6 @@ public class URLServiceTest {
 
 	@Mock
 	private URLRepository repository;
-
-	@Before
-	public void init() {
-		MockitoAnnotations.initMocks(this);
-	}
 
 	@Test
 	public void whenShortenedExistsReturnsUrl() {
@@ -41,10 +49,11 @@ public class URLServiceTest {
 		URL urlReturned = service.getURLByShortened(existingShortened);
 
 		// Then
-		Assert.assertEquals(urlReturned, url);
+		assertThat(urlReturned).isNotNull();
+		assertEquals(urlReturned, url);
 	}
 	
-	@Test(expected = URLNotFoundException.class)
+	@Test
 	public void whenShortenedDoesNotExistThrowsURLNotFoundException() {
 		// Given
 		String notExistingCode = "1BruNAJ";
@@ -53,7 +62,53 @@ public class URLServiceTest {
 				.thenThrow(new URLNotFoundException("URL not found for shortened code: " + notExistingCode));
 
 		// When
-		service.getURLByShortened(notExistingCode);
+		assertThrows(URLNotFoundException.class, () -> {
+			service.getURLByShortened(notExistingCode);
+        });
+	}
+	
+	@Test
+	public void whenDeleteByIdThenVerifyMock() {
+		repository.deleteById("YjM2ND");
+		
+		verify(repository, atLeastOnce()).deleteById("YjM2ND");
+	}
+	
+	@Test
+	void findAll() {
+		URL url = new URL();
+		List<URL> urlList = new ArrayList<URL>();
+		urlList.add(url);
+
+		when(repository.findAll()).thenReturn(urlList);
+		
+		List<URL> urlsReturned = service.getAllURLs();
+		
+		verify(repository).findAll();
+		
+		// Then
+		assertThat(urlsReturned).isNotNull();
+		assertThat(urlsReturned).hasSize(1);
+	}
+	
+	@DisplayName("BDD - Find All (Behavior Driven Development)")
+	@Test
+	void shouldReturnAll() {
+		
+		//given
+		URL url = new URL();
+		List<URL> urlList = new ArrayList<URL>();
+		urlList.add(url);
+		given(repository.findAll()).willReturn(urlList);
+		
+		//when
+		List<URL> urlsReturned = service.getAllURLs();
+		
+		//then
+		then(repository).should().findAll();
+
+		assertThat(urlsReturned).isNotNull();
+		assertThat(urlsReturned).hasSize(1);
 	}
 	
 }

@@ -19,9 +19,6 @@ import lombok.extern.slf4j.Slf4j;
 @Slf4j
 public class URLService {
 
-	public static final String BREAK_CHARACTERS = "[\n|\r|\t]";
-
-	
 	@Autowired
 	private URLRepository urlRepository;
 		
@@ -63,12 +60,8 @@ public class URLService {
 	}
 
 	public URL getURLByShortened(String shortenedURL) {
-
-		final String code = shortenedURL.replaceAll(BREAK_CHARACTERS, "_");
-		log.info("Searching for the shortened URL code: " + code);
-
-		Optional<URL> optional = Optional.ofNullable(urlRepository.findByShortened(code));
-		return optional.orElseThrow(() -> new URLNotFoundException("URL not found for the shortened code: " + code));
+		Optional<URL> optional = Optional.ofNullable(urlRepository.findByShortened(shortenedURL));
+		return optional.orElseThrow(() -> new URLNotFoundException("URL not found for the shortened code: " + shortenedURL));
 	}
 
 	public List<URL> getAllURLs()

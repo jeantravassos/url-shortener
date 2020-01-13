@@ -6,39 +6,45 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
 import org.springframework.test.context.ActiveProfiles;
-import org.springframework.test.context.junit4.SpringRunner;
 import org.springframework.test.web.servlet.MockMvc;
+import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.jeantravassos.urlshortener.domain.URL;
 import com.jeantravassos.urlshortener.exception.URLNotFoundException;
 import com.jeantravassos.urlshortener.service.URLService;
 import com.jeantravassos.urlshortener.service.URLStatisticService;
+import com.jeantravassos.urlshortener.web.controller.URLController;
 
-
-@RunWith(SpringRunner.class)
-@SpringBootTest
-@AutoConfigureMockMvc
 @ActiveProfiles("test")
+@ExtendWith(MockitoExtension.class)
 public class URLControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
 
-	@MockBean
+	@Mock
 	private URLStatisticService statisticService;
 	
-	@MockBean
+	@Mock
 	private URLService urlService;
+	
+	@InjectMocks
+	private URLController controller;
 
-
+	@BeforeEach
+	void setUp() {
+		mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
+	}
+	
 	@Test
 	public void whenURLShortenedDoesNotExistReturnsNotFound() throws Exception {
 		// Given
@@ -48,7 +54,7 @@ public class URLControllerTest {
 				.willThrow(new URLNotFoundException("URL not found for shortened " + notExistingShortened));
 
 		// When and Then
-		this.mockMvc.perform(get("/url/" + notExistingShortened)).andExpect(status().isNotFound());
+		mockMvc.perform(get("/url/" + notExistingShortened)).andExpect(status().isNotFound());
 	}
 
 	@Test
