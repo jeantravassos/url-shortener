@@ -8,42 +8,29 @@ import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.jeantravassos.urlshortener.domain.URLStatistic;
 import com.jeantravassos.urlshortener.service.URLService;
 import com.jeantravassos.urlshortener.service.URLStatisticService;
 import com.jeantravassos.urlshortener.web.controller.URLStatisticController;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(URLStatisticController.class)
 public class URLStatisticControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Mock
+	@MockBean
 	private URLStatisticService statisticService;
 
-	@Mock
+	@MockBean
 	private URLService urlService;
-	
-	@InjectMocks
-	private URLStatisticController controller;
-	
-	
-	@BeforeEach
-	void setUp() {
-		mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-	}
 	
 	@Test
 	public void whenGetURLStatisticsByShortenedReturnsExisting() throws Exception {

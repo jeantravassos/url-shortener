@@ -8,42 +8,39 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.http.HttpHeaders;
-import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import com.jeantravassos.urlshortener.domain.URL;
+import com.jeantravassos.urlshortener.dto.URLDTO;
 import com.jeantravassos.urlshortener.exception.URLNotFoundException;
 import com.jeantravassos.urlshortener.service.URLService;
 import com.jeantravassos.urlshortener.service.URLStatisticService;
 import com.jeantravassos.urlshortener.web.controller.URLController;
 
-@ActiveProfiles("test")
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(URLController.class)
 public class URLControllerTest {
 
 	@Autowired
 	private MockMvc mockMvc;
 
-	@Mock
+	@MockBean
 	private URLStatisticService statisticService;
 	
-	@Mock
+	@MockBean
 	private URLService urlService;
-	
-	@InjectMocks
-	private URLController controller;
 
-	@BeforeEach
-	void setUp() {
-		mockMvc = MockMvcBuilders.standaloneSetup(controller).build();
-	}
+	URLDTO urlDto;
+
+    @BeforeEach
+    void setUpDto() {
+        urlDto = URLDTO.builder()
+        		.url("http://www.jeantravassos.com")
+                .build();
+    }
 	
 	@Test
 	public void whenURLShortenedDoesNotExistReturnsNotFound() throws Exception {
@@ -72,5 +69,21 @@ public class URLControllerTest {
 		this.mockMvc.perform(get("/url/" + existingShortened)).andExpect(status().is3xxRedirection())
 				.andExpect(header().string(HttpHeaders.LOCATION, equalTo(url.getOriginal())));
 	}
+	
+//	@Test
+//	public void whenDTOReceivedShouldCreateCodeAndSave() throws Exception {
+//		//Given
+//		URL url = new URL();
+//		url.setOriginal("http://www.jeantravassos.com");
+//		
+//		given(urlService.createShortURL(url.getOriginal())).willReturn(url);
+//		
+//		// When
+//		mockMvc.perform(post("/url/")
+//				.accept(MediaType.APPLICATION_JSON)
+//				.contentType(MediaType.APPLICATION_JSON)
+//				.content("{\"url\":http://www.jeantravassos.com}"))
+//			.andExpect(status().isOk());
+//	}
 	
 }

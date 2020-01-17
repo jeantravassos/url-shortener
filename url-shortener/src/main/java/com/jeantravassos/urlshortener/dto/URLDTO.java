@@ -9,6 +9,7 @@ import org.hibernate.validator.constraints.URL;
 
 import io.swagger.annotations.ApiModel;
 import io.swagger.annotations.ApiParam;
+import lombok.Builder;
 import lombok.Data;
 
 @ApiModel(value = "URL parameter form the POST API", description = "It's the body of the POST request.")
@@ -27,6 +28,7 @@ public class URLDTO implements Serializable {
 		this.url = "";
 	}
 	
+	@Builder
 	public URLDTO(@NotNull @NotEmpty @URL String url) {
 		super();
 		this.url = url;
